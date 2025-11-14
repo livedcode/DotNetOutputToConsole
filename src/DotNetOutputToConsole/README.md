@@ -1,60 +1,55 @@
 # DotNetOutputToConsole
 
-> 🧩 A secure ASP.NET Framework (4.8 / 4.8.1) helper library that writes logs, variables, and exceptions directly to the browser console — perfect for UAT and DEV environments.
+A secure ASP.NET Framework (4.8 / 4.8.1) helper library that writes logs, variables, and exceptions directly to the browser console — perfect for UAT and DEV environments.
 
----
+## Features
+- Write messages, variables, and errors to the browser console (`console.info`, `console.log`, `console.error`)
+- Automatically logs unhandled exceptions globally
+- Works with any ASP.NET Web Forms or MVC project
+- Simple global toggle via `web.config`
+- XSS-safe using `System.Web.Helpers.Json.Encode` to sanitize all outputs
+- Zero third-party dependencies
+- Includes unit tests and a demo web app
+- Fully compatible with .NET Framework 4.8 to 4.8.1
 
-## ✨ Features
-- ✅ Write messages, variables, and errors to the browser console (`console.info`, `console.log`, `console.error`)
-- ✅ Automatically logs **unhandled exceptions** globally
-- ✅ Works with any **ASP.NET Web Forms** or **MVC** project
-- ✅ Simple global toggle via `web.config`
-- ✅ **XSS-safe** — uses `System.Web.Helpers.Json.Encode` to sanitize all outputs
-- ✅ Zero third-party dependencies
-- ✅ Includes **unit tests** and a **demo web app**
-- ✅ Fully compatible with **.NET Framework 4.8 → 4.8.1**
-
----
-
-## ⚙️ Installation
-Install from NuGet using the .NET CLI or Visual Studio Package Manager Console:
+## Installation
+Install from NuGet using the Package Manager Console:
 
 ```powershell
 Install-Package DotNetOutputToConsole
 ```
 
----
-
-## 💡 Purpose
-When deploying ASP.NET apps to UAT or DEV servers, developers often need to see **runtime values** or **exceptions** directly in the browser console.  
-This library provides a **safe, fast, and zero-config** way to do that, without changing your page layout or using intrusive alert popups.
+## Purpose
+When deploying ASP.NET applications to UAT or DEV environments, developers often need to inspect runtime values or exceptions directly in the browser console.
+This library provides a safe, fast, invisible way to do that without altering page UI or showing alert popups.
 
 Example:
+
 ```csharp
 DotNetOutputToConsoleLogger.LogVariable("SessionId", Session.SessionID);
 DotNetOutputToConsoleLogger.LogError("Missing input data");
 ```
 
 Console output:
+
 ```
 LOG: SessionId: 1a2b3c4d
 ERROR: Missing input data
 ```
 
----
+## Architecture Overview
 
-## 🧠 Architecture Overview
 | Component | Description |
-|------------|--------------|
-| `DotNetOutputToConsoleLogger` | Core class that writes safe `<script>` tags to the HTTP response with sanitized console commands. |
-| `DotNetOutputToConsoleHttpModule` | Global ASP.NET module that automatically logs **unhandled exceptions** to the console. |
-| `web.config` switch | Toggle feature ON/OFF without recompiling. |
-| `Json.Encode()` | Ensures all messages are XSS-safe before rendering. |
+|----------|-------------|
+| `DotNetOutputToConsoleLogger` | Core class that writes sanitized console commands into browser output. |
+| `DotNetOutputToConsoleHttpModule` | Automatically logs unhandled exceptions at the application level. |
+| `web.config` switch | Allows turning console output on or off globally. |
+| `Json.Encode()` | Sanitizes all messages to avoid XSS or script injection. |
 
----
+## Configuration
 
-## 📂 Configuration
-Add this to your **Web.config**:
+Add the following to your Web.config:
+
 ```xml
 <configuration>
   <appSettings>
@@ -63,37 +58,39 @@ Add this to your **Web.config**:
 
   <system.webServer>
     <modules>
-      <add name="DotNetOutputToConsoleHttpModule" type="DotNetOutputToConsole.DotNetOutputToConsoleHttpModule" />
+      <add name="DotNetOutputToConsoleHttpModule"
+           type="DotNetOutputToConsole.DotNetOutputToConsoleHttpModule" />
     </modules>
   </system.webServer>
 </configuration>
 ```
 
-✅ Set `"EnableOutputToConsole"` to `"true"` in UAT/DEV.  
-🚫 Set to `"false"` in production for performance and security.
+Set `"EnableOutputToConsole"` to `"true"` in UAT or DEV.
+Set to `"false"` in production.
 
----
+## Usage Examples
 
-## 🧩 Usage Examples
-### 1️⃣ Log Information
+### Log Information
 ```csharp
 DotNetOutputToConsoleLogger.LogInfo("Page load completed");
 ```
-Console output:
+
+Output:
 ```
 INFO: Page load completed
 ```
 
-### 2️⃣ Log Variables
+### Log Variables
 ```csharp
 DotNetOutputToConsoleLogger.LogVariable("Username", user.Name);
 ```
-Console output:
+
+Output:
 ```
 LOG: Username: JohnDoe
 ```
 
-### 3️⃣ Log Exceptions
+### Log Exceptions
 ```csharp
 try
 {
@@ -104,28 +101,28 @@ catch (Exception ex)
     DotNetOutputToConsoleLogger.LogError(ex.Message);
 }
 ```
-Console output:
+
+Output:
 ```
 ERROR: Simulated failure
 ```
 
-### 4️⃣ Automatic Error Logging (No Try/Catch Needed)
-The built-in HTTP module automatically logs unhandled exceptions:
+### Automatic Error Logging (Unhandled Exceptions)
 ```csharp
 protected void Page_Load(object sender, EventArgs e)
 {
     throw new Exception("Unhandled page error!");
 }
 ```
-Console output:
+
+Output:
 ```
 ERROR: Unhandled Exception: Unhandled page error!
 ```
 
----
+## Class Overview
 
-## 🧩 Class Overview
-### 🔹 DotNetOutputToConsoleLogger.cs
+### DotNetOutputToConsoleLogger.cs
 ```csharp
 public static class DotNetOutputToConsoleLogger
 {
@@ -134,10 +131,8 @@ public static class DotNetOutputToConsoleLogger
     public static void LogError(string message);
 }
 ```
-All three use `Json.Encode()` internally to prevent XSS or script injection.
 
-### 🔹 DotNetOutputToConsoleHttpModule.cs
-Automatically hooks into the ASP.NET pipeline:
+### DotNetOutputToConsoleHttpModule.cs
 ```csharp
 public class DotNetOutputToConsoleHttpModule : IHttpModule
 {
@@ -153,54 +148,43 @@ public class DotNetOutputToConsoleHttpModule : IHttpModule
 }
 ```
 
----
+## Security
 
-## 🔒 Security
-| Protection | Description |
-|-------------|--------------|
-| **XSS Safe** | Uses `System.Web.Helpers.Json.Encode()` to escape any special characters before writing scripts. |
-| **Response-Safe** | Only writes inside valid `<script>` tags. |
-| **Config Toggle** | Easily disable all console output via Web.config. |
-| **Recommended Use** | Only enable in DEV or UAT environments. |
+| Feature | Description |
+|--------|-------------|
+| XSS Protection | All messages pass through `Json.Encode()` to escape special characters. |
+| Safe Output | Only writes inside valid `<script>` blocks. |
+| Config Toggle | Can be disabled instantly using Web.config. |
+| Recommended Usage | Enable only in UAT/DEV. |
 
----
+## Unit Testing
 
-## 🧪 Unit Testing
-### Installation
+### Test Framework Installation
 ```powershell
 Install-Package NUnit
 Install-Package NUnit3TestAdapter
 Install-Package Microsoft.NET.Test.Sdk
 ```
+
 ### Example Test
 ```csharp
-using NUnit.Framework;
-using DotNetOutputToConsole;
-
-namespace DotNetOutputToConsole.Tests
+[Test]
+public void LogInfo_ShouldNotThrow()
 {
-    [TestFixture]
-    public class DotNetOutputToConsoleLoggerTests
-    {
-        [Test]
-        public void LogInfo_ShouldNotThrow() => Assert.DoesNotThrow(() => DotNetOutputToConsoleLogger.LogInfo("info"));
-        [Test]
-        public void LogError_ShouldNotThrow() => Assert.DoesNotThrow(() => DotNetOutputToConsoleLogger.LogError("error"));
-        [Test]
-        public void LogVariable_ShouldNotThrow() => Assert.DoesNotThrow(() => DotNetOutputToConsoleLogger.LogVariable("Key", "Value"));
-    }
+    Assert.DoesNotThrow(() => DotNetOutputToConsoleLogger.LogInfo("info"));
 }
 ```
+
 ### Run Tests
-In Visual Studio 2022 → **Test → Test Explorer → Run All Tests**  
+Visual Studio 2022 → Test Explorer → Run All Tests  
 or CLI:
+
 ```bash
-dotnet test tests/DotNetOutputToConsole.Tests/DotNetOutputToConsole.Tests.csproj
+dotnet test
 ```
 
----
+## Project Structure
 
-## 🧱 Project Structure
 ```
 DotNetOutputToConsole/
 ├── src/
@@ -221,37 +205,16 @@ DotNetOutputToConsole/
         └── DotNetOutputToConsoleLoggerTests.cs
 ```
 
----
+## How It Works
+1. The logger injects `<script>` tags into the HTTP response.
+2. Messages are encoded using `Json.Encode()` to prevent script injection.
+3. Output executes inside the browser console.
+4. View results using Developer Tools → Console.
 
-## 🧩 How It Works
-1. `DotNetOutputToConsoleLogger` calls `HttpContext.Current.Response.Write(...)`
-2. It injects a `<script>` tag that runs a console command like:
-   ```html
-   <script>console.log("Your message");</script>
-   ```
-3. All messages are escaped via `Json.Encode()`.
-4. View messages in browser **Developer Tools → Console tab**.
+## Author
+Created by: **livedcode**  
+GitHub: https://github.com/livedcode  
+NuGet: https://www.nuget.org/profiles/livedcode
 
----
-
-## 🧑‍💻 Author
-**Created by:** `livedcode`  
-GitHub: [https://github.com/livedcode](https://github.com/livedcode)  
-NuGet: [https://www.nuget.org/profiles/livedcode](https://www.nuget.org/profiles/livedcode)
-
----
-
-## 📜 License
+## License
 MIT License © 2025 livedcode
-
----
-
-## 🧭 Future Enhancements
-- Add `LogWarning()` → `console.warn()`
-- Dual logging (console + file)
-- ASP.NET Core middleware support
-- MVC exception filter integration
-
----
-
-> 💡 “The simplest and safest way to see your ASP.NET logs in the browser console.”

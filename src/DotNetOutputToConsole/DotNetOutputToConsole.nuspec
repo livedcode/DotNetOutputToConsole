@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package>
+	<metadata>
+		<id>DotNetOutputToConsole</id>
+		<version>1.0.0</version>
+		<authors>lived</authors>
+		<owners>lived</owners>
+		<license type="expression">MIT</license>
+		<projectUrl>https://github.com/livedcode/DotNetOutputToConsole</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>ASP.NET 4.8+ helper library that outputs variables and errors directly to the browser console for debugging on UAT/DEV servers.</description>
+		<tags>aspnet net48 net481 console logger debug error output</tags>
+		<dependencies>
+			<group targetFramework=".NETFramework4.8" />
+			<group targetFramework=".NETFramework4.8.1" />
+		</dependencies>
+		<readme>docs\README.md</readme>
+	</metadata>
+
+	<files>
+		<file src="lib\net48\DotNetOutputToConsole.dll" target="lib/net48" />
+		<file src="lib\net481\DotNetOutputToConsole.dll" target="lib/net481" />
+		<file src="README.md" target="docs\" />
+		<file src="LICENSE" target="LICENSE" />
+	</files>
+</package>
