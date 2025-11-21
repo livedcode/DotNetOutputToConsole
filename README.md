@@ -2,6 +2,7 @@
 
 A secure ASP.NET Framework (4.8 / 4.8.1) helper library that writes logs, variables, and exceptions directly to the browser console — perfect for UAT and DEV environments.
 
+## What's New in v1.0.0
 ## Features
 - Write messages, variables, and errors to the browser console (`console.info`, `console.log`, `console.error`)
 - Automatically logs unhandled exceptions globally
@@ -11,6 +12,26 @@ A secure ASP.NET Framework (4.8 / 4.8.1) helper library that writes logs, variab
 - Zero third-party dependencies
 - Includes unit tests and a demo web app
 - Fully compatible with .NET Framework 4.8 to 4.8.1
+
+
+## What's New in v1.1.0
+- Removed dependency on `System.Web.Helpers` (`Json.Encode()` no longer required)
+- Now uses **HttpUtility.JavaScriptStringEncode** (safe, built-in, no external packages)
+- Improved XSS safety logic
+- Cleaned references to reduce DLL size
+- Updated module to correctly handle missing AppSettings
+- Assembly version sync: `1.1.0.0`
+- NuGet package version: `1.1.0`
+
+## Features
+- Write messages, variables, and errors to the browser console (`console.info`, `console.log`, `console.error`)
+- Automatically logs unhandled exceptions globally
+- Works with any ASP.NET Web Forms or MVC project
+- Simple global toggle via web.config
+- No third-party dependencies
+- Includes unit tests and demo web app
+- Fully compatible with .NET Framework 4.8 to 4.8.1
+
 
 ## Installation
 Install from NuGet using the Package Manager Console:
