@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		CHANGELOG.md = CHANGELOG.md
 		LICENSE = LICENSE
-		README.md = README.md
+		src\DotNetOutputToConsole\README.md = src\DotNetOutputToConsole\README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetOutputToConsole.DemoWeb", "src\DotNetOutputToConsole.DemoWeb\DotNetOutputToConsole.DemoWeb.csproj", "{AB6B7FF4-20E1-4597-9932-3985E21E809E}"
