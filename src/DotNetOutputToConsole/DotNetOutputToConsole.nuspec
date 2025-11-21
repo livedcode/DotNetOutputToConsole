@@ -2,9 +2,9 @@
 <package>
 	<metadata>
 		<id>DotNetOutputToConsole</id>
-		<version>1.0.0</version>
-		<authors>lived</authors>
-		<owners>lived</owners>
+		<version>1.1.0</version>
+		<authors>livedcode</authors>
+		<owners>livedcode</owners>
 		<license type="expression">MIT</license>
 		<projectUrl>https://github.com/livedcode/DotNetOutputToConsole</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>

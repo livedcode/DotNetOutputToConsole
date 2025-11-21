@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Web;
-using System.Configuration;
-using System.Web.Helpers;
 
 namespace DotNetOutputToConsole
 {
@@ -13,35 +11,36 @@ namespace DotNetOutputToConsole
     {
 
         private static bool IsEnabled =>
-            string.Equals(ConfigurationManager.AppSettings["EnableOutputToConsole"], "true", StringComparison.OrdinalIgnoreCase);
+             string.Equals(
+                 HttpContext.Current?.Application["EnableOutputToConsole"]?.ToString(),
+                 "true",
+                 StringComparison.OrdinalIgnoreCase);
 
-        public static void LogInfo(string message)
+        private static string Escape(string input) =>
+            HttpUtility.JavaScriptStringEncode(input ?? string.Empty);
+
+        private static void WriteToResponse(string script)
         {
-            if (!IsEnabled) return;
-            WriteScript("info", message);
+            var ctx = HttpContext.Current;
+            if (ctx == null || !IsEnabled)
+                return;
+
+            ctx.Response.Write($"<script>{script}</script>");
         }
 
-        public static void LogError(string message)
-        {
-            if (!IsEnabled) return;
-            WriteScript("error", message);
-        }
+        public static void LogInfo(string message) =>
+            WriteToResponse($"console.info(\"{Escape(message)}\");");
 
         public static void LogVariable(string name, object value)
         {
-            if (!IsEnabled) return;
-            string combined = $"{name}: {value}";
-            WriteScript("log", combined);
+            string safeName = Escape(name);
+            string safeValue = Escape(value?.ToString());
+            WriteToResponse($"console.log(\"{safeName}: {safeValue}\");");
         }
 
-        private static void WriteScript(string level, string message)
-        {
-            var context = HttpContext.Current;
-            if (context?.Response == null) return;
-
-            var encoded = Json.Encode($"{level.ToUpper()}: {message}");
-            context.Response.Write($"<script>console.{level}({encoded});</script>");
-        }
+        public static void LogError(string message) =>
+            WriteToResponse($"console.error(\"{Escape(message)}\");");
     }
-}    
+}
+
 
